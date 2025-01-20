@@ -105,7 +105,9 @@ jobs:
           path: ./build/Release/sc-machine-*.tar.gz
 
   changelog:
-    needs: build-conan
+    needs:
+      - build-conan
+      - docker
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -121,6 +123,7 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
+          pattern: sc-machine-*
           path: artifacts
 
       - name: Release
@@ -132,9 +135,7 @@ jobs:
             artifacts/**/*.tar.gz
 
   docker:
-    needs: 
-      - check-dockerfile
-      - changelog
+    needs: check-dockerfile
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
